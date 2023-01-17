@@ -1,0 +1,136 @@
+adj_matrix = []
+visted = []
+
+path_v = []
+current_max = -9999
+max_node = -1;
+final_node = -1;
+result = []
+
+
+
+#detectting the cycle and getting the heaviest edge in the cycle
+def dfs_Cycle(v,parent):
+    visted[v] = True
+    node = 0
+    global max_node
+    global final_node
+    global current_max
+    
+    for i in adj_matrix[v]:
+        # print(f'{node} testing with edge value of {i}')
+        if i != 0:
+            if visted[node] == False:
+                # print(f'{node} not visited')
+                path_v.append(node)
+                if(dfs_Cycle(node,v)):
+                    # print(f'currently in node {v} to check for max')
+                    if v != final_node:
+                        if i > current_max:
+                            current_max = i
+                            max_node = v
+                        return True
+                    if v == final_node:
+                        if i > current_max:
+                            current_max = i
+                            max_node = v
+                        return False
+                    
+            elif visted[node] == True and node != parent:
+              
+                current_max = i
+                max_node = v
+                final_node = node
+                adj_matrix[v][node] = 0;#marking it as the final node
+                adj_matrix[node][v] = 0;
+                return True
+        node = node + 1
+    # print(f"going back to {parent}")
+    return False
+    
+
+def dfs_output(v,parent):
+    visted[v] = True
+    node = 0
+    order_of_R = []
+    for i in adj_matrix[v]:
+        if i != 0:
+            if visted[node] == False:
+              
+                order_of_R.append(node)
+               
+            elif visted[node] == True and node != parent:
+                pass
+                
+        node = node + 1
+    
+    for j in range(len(order_of_R)):
+        min_index = j
+        for k in range(j+1 , len(order_of_R)):
+            node_min = order_of_R[min_index]
+            node = order_of_R[k]
+            if adj_matrix[v][node_min] > adj_matrix[v][node]:
+                min_index = k
+        temp = order_of_R[j] 
+        order_of_R[j] = order_of_R[min_index]
+        order_of_R[min_index] = temp
+
+  
+    for z in range(len(order_of_R)):
+        result.append(order_of_R[z])
+        dfs_output(order_of_R[z],v)
+    
+    return False
+
+    
+
+
+
+
+
+def main():
+    matrix_size = 0
+    while True:
+        try:
+            for value in input('').split('\n') :
+                row_input = []
+                for num in value.split(' '):
+                    if(num != ''):
+                        row_input.append(int(num))
+                adj_matrix.append(row_input)
+                matrix_size = matrix_size + 1
+        except (EOFError):
+            break
+    
+    i = 0
+    while i < matrix_size:
+        visted.append(False)
+        i = i + 1
+    
+    path_v.append(0)
+    dfs_Cycle(0,-1)
+    # removing the heaviest edge in the cycle
+    for i in range(matrix_size):
+        if adj_matrix[max_node][i] == current_max:
+            # adj_matrix[max_node][i] = 0
+            # adj_matrix[i][max_node] = 0
+            pass
+
+        else:
+            continue
+    
+
+    
+    i = 0
+    while i < matrix_size:
+        visted[i] = False
+        i = i + 1
+    result.append(0)
+    dfs_output(0,-1)
+    for item in result:
+        print(item,end=" ")
+    print()
+
+main()
+		
+    
