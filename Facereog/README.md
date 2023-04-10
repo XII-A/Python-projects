@@ -1,3 +1,3 @@
 - A project I have done to learn how to use opencv2
 - It increases the brightness of the screen when it detects the user's face
-- The cascades used aren't mine
+- The cascades used were publicly available
